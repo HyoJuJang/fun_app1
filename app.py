@@ -2,26 +2,26 @@ import streamlit as st
 import time
 import random
 
-# 페이지 설정
+# 설정
 st.set_page_config(page_title="📡 정치 성향 측정기", page_icon="📡", layout="centered")
 
-# 세션 상태 초기화
+# 세션 초기화
 if "running" not in st.session_state:
     st.session_state.running = True
 if "result" not in st.session_state:
     st.session_state.result = None
 
-# 결과 목록
+# 결과 리스트
 results = [
     """🧱 **보수적 행보형**  
     변화보다 안정이 중요.  
-    아직도 폰 진동 끄는 법 모름.  
-    **대표 발언**: "이게 그때 내가 알던 그거 맞아?"  
+    전 정권을 옹호함.  
+    **대표 발언**: "이게 맞지"  
     """,
     """🪩 **진보 과잉형**  
     매일 가치관 업데이트 중.  
-    앱 바뀌면 인생도 바뀜.  
-    **대표 발언**: "그건 너무 구시대적이지 않아?"  
+    부동산 관심 없음  
+    **대표 발언**: "아이 좋아"  
     """,
     """🛏 **중립 침대형**  
     정치보다 침대 온도에 관심 많음.  
@@ -46,30 +46,25 @@ results = [
 st.markdown("<h1 style='text-align:center;'>📡 당신의 정치 성향을 측정 중입니다...</h1>", unsafe_allow_html=True)
 st.write("국가 정보 센터와 연결 중...\n신경 반응을 감지 중입니다...")
 
-# 뇌파 애니메이션 바
-bar_placeholder = st.empty()
-
-# STOP 버튼 설명 텍스트 (중앙 정렬)
+# 안내 문구 + STOP 버튼 중앙 배치
 st.markdown("<h4 style='text-align:center;'>측정을 멈추고 결과를 보려면 아래 버튼을 눌러주세요</h4>", unsafe_allow_html=True)
-
-# STOP 버튼 중앙 배치
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    stop_button = st.button("🟥 STOP - 측정 종료", use_container_width=True)
+    stop_clicked = st.button("🟥 STOP - 측정 종료", use_container_width=True)
 
-# 버튼 눌렸을 경우: 측정 중단 & 결과 저장
-if stop_button:
+# STOP 버튼 클릭 → 멈추기
+if stop_clicked:
     st.session_state.running = False
     st.session_state.result = random.choice(results)
 
-# 실행 중일 때: 바 애니메이션 갱신
+# 뇌파 바 출력
+bar_placeholder = st.empty()
 if st.session_state.running:
     bar = ""
-    for _ in range(20):
+    for _ in range(10):
         bar += random.choice(["📈", "📉"])
-        bar_placeholder.markdown(f"<h3 style='text-align:center;'>{bar}</h3>", unsafe_allow_html=True)
-        time.sleep(0.1)
-    st.experimental_rerun()
+    bar_placeholder.markdown(f"<h3 style='text-align:center;'>{bar}</h3>", unsafe_allow_html=True)
+
 
 # 결과 출력
 if not st.session_state.running and st.session_state.result:
@@ -77,7 +72,7 @@ if not st.session_state.running and st.session_state.result:
     st.success(st.session_state.result)
     st.markdown("""
     ---
-    📝 역시 그럴 줄 알았어.
+    📝 당신의 정치 성향.. 그거일 줄 알았어.
     """)
 
 
