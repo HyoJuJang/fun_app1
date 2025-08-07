@@ -5,68 +5,152 @@ import random
 # 페이지 설정
 st.set_page_config(page_title="📡 정치 성향 측정기", page_icon="📡", layout="centered")
 
-# 제목 및 설명
+# 세션 상태 초기화
+if "running" not in st.session_state:
+    st.session_state.running = True
+if "result" not in st.session_state:
+    st.session_state.result = None
+
+# 결과 목록
+results = [
+    """🧱 **보수적 행보형**  
+    변화보다 안정이 중요.  
+    아직도 폰 진동 끄는 법 모름.  
+    **대표 발언**: "이게 그때 내가 알던 그거 맞아?"  
+    """,
+    """🪩 **진보 과잉형**  
+    매일 가치관 업데이트 중.  
+    앱 바뀌면 인생도 바뀜.  
+    **대표 발언**: "그건 너무 구시대적이지 않아?"  
+    """,
+    """🛏 **중립 침대형**  
+    정치보다 침대 온도에 관심 많음.  
+    **대표 발언**: "난 그냥 그랬으면 좋겠어..."  
+    """,
+    """🧃 **양비론 젤리형**  
+    결론: "다 똑같은 거 아냐?"  
+    뭐든 중간, 뭐든 흐물  
+    **대표 발언**: "거기서 거기지 뭐."  
+    """,
+    """🧠 **진지 백서형**  
+    혼자 맥락 분석하다 지침.  
+    **대표 발언**: "이건 맥락을 봐야지."  
+    """,
+    """🐒 **선동적 침팬지형**  
+    화낼 준비 완료.  
+    **대표 발언**: "이게 나라냐!!! (근데 왜 그런진 모름)"  
+    """
+]
+
+# 타이틀
 st.markdown("<h1 style='text-align:center;'>📡 당신의 정치 성향을 측정 중입니다...</h1>", unsafe_allow_html=True)
 st.write("국가 정보 센터와 연결 중...\n신경 반응을 감지 중입니다...")
 
-# 애니메이션용 빈 요소
+# 뇌파 애니메이션 바
 bar_placeholder = st.empty()
 
-# 뇌파 바 애니메이션
-bar = ""
-for _ in range(20):
-    bar += random.choice(["📈", "📉"])
-    bar_placeholder.markdown(f"<h3 style='text-align:center;'>{bar}</h3>", unsafe_allow_html=True)
-    time.sleep(0.1)
+# STOP 버튼 설명 텍스트 (중앙 정렬)
+st.markdown("<h4 style='text-align:center;'>측정을 멈추고 결과를 보려면 아래 버튼을 눌러주세요</h4>", unsafe_allow_html=True)
 
-# 버튼
-if st.button("🟥 STOP - 측정 종료"):
+# STOP 버튼 중앙 배치
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    stop_button = st.button("🟥 STOP - 측정 종료", use_container_width=True)
+
+# 버튼 눌렸을 경우: 측정 중단 & 결과 저장
+if stop_button:
+    st.session_state.running = False
+    st.session_state.result = random.choice(results)
+
+# 실행 중일 때: 바 애니메이션 갱신
+if st.session_state.running:
+    bar = ""
+    for _ in range(20):
+        bar += random.choice(["📈", "📉"])
+        bar_placeholder.markdown(f"<h3 style='text-align:center;'>{bar}</h3>", unsafe_allow_html=True)
+        time.sleep(0.1)
+    st.experimental_rerun()
+
+# 결과 출력
+if not st.session_state.running and st.session_state.result:
     st.markdown("---")
-    result = random.choice([
-
-        """🧱 **보수적 행보형**  
-        변화보다 안정이 중요.  
-        아직도 폰 진동 끄는 법 모름.  
-        **대표 발언**: "이게 그때 내가 알던 그거 맞아?"  
-        """,
-
-        """🪩 **진보 과잉형**  
-        매일 가치관 업데이트 중.  
-        앱 바뀌면 인생도 바뀜.  
-        **대표 발언**: "그건 너무 구시대적이지 않아?"  
-        """,
-
-        """🛏 **중립 침대형**  
-        정치보다 침대 온도에 관심 많음.  
-        **대표 발언**: "난 그냥 그랬으면 좋겠어..."  
-        """,
-
-        """🧃 **양비론 젤리형**  
-        결론: "다 똑같은 거 아냐?"  
-        뭐든 중간, 뭐든 흐물  
-        **대표 발언**: "거기서 거기지 뭐."  
-        """,
-
-        """🧠 **진지 백서형**  
-        혼자 맥락 분석하다 지침.  
-        **대표 발언**: "이건 맥락을 봐야지."  
-        """,
-
-        """🐒 **선동적 침팬지형**  
-        화낼 준비 완료.  
-        **대표 발언**: "이게 나라냐!!! (근데 왜 그런진 모름)"  
-        """
-    ])
-
-    # 결과 출력
-    st.success(result)
-
-    # 하단 안내 문구
+    st.success(st.session_state.result)
     st.markdown("""
     ---
-    📝 이 테스트는 정치적 성향을 진단하지 않습니다.  
-    당신이 어떤 방식으로 피곤한지를 알려줄 뿐입니다.
+    📝 역시 그럴 줄 알았어.
     """)
+
+
+
+# import streamlit as st
+# import time
+# import random
+
+# # 페이지 설정
+# st.set_page_config(page_title="📡 정치 성향 측정기", page_icon="📡", layout="centered")
+
+# # 제목 및 설명
+# st.markdown("<h1 style='text-align:center;'>📡 당신의 정치 성향을 측정 중입니다...</h1>", unsafe_allow_html=True)
+# st.write("국가 정보 센터와 연결 중...\n신경 반응을 감지 중입니다...")
+
+# # 애니메이션용 빈 요소
+# bar_placeholder = st.empty()
+
+# # 뇌파 바 애니메이션
+# bar = ""
+# for _ in range(20):
+#     bar += random.choice(["📈", "📉"])
+#     bar_placeholder.markdown(f"<h3 style='text-align:center;'>{bar}</h3>", unsafe_allow_html=True)
+#     time.sleep(0.1)
+
+# # 버튼
+# if st.button("🟥 STOP - 측정 종료"):
+#     st.markdown("---")
+#     result = random.choice([
+
+#         """🧱 **보수적 행보형**  
+#         변화보다 안정이 중요.  
+#         아직도 폰 진동 끄는 법 모름.  
+#         **대표 발언**: "이게 그때 내가 알던 그거 맞아?"  
+#         """,
+
+#         """🪩 **진보 과잉형**  
+#         매일 가치관 업데이트 중.  
+#         앱 바뀌면 인생도 바뀜.  
+#         **대표 발언**: "그건 너무 구시대적이지 않아?"  
+#         """,
+
+#         """🛏 **중립 침대형**  
+#         정치보다 침대 온도에 관심 많음.  
+#         **대표 발언**: "난 그냥 그랬으면 좋겠어..."  
+#         """,
+
+#         """🧃 **양비론 젤리형**  
+#         결론: "다 똑같은 거 아냐?"  
+#         뭐든 중간, 뭐든 흐물  
+#         **대표 발언**: "거기서 거기지 뭐."  
+#         """,
+
+#         """🧠 **진지 백서형**  
+#         혼자 맥락 분석하다 지침.  
+#         **대표 발언**: "이건 맥락을 봐야지."  
+#         """,
+
+#         """🐒 **선동적 침팬지형**  
+#         화낼 준비 완료.  
+#         **대표 발언**: "이게 나라냐!!! (근데 왜 그런진 모름)"  
+#         """
+#     ])
+
+#     # 결과 출력
+#     st.success(result)
+
+#     # 하단 안내 문구
+#     st.markdown("""
+#     ---
+#     📝 이 테스트는 정치적 성향을 진단하지 않습니다.  
+#     당신이 어떤 방식으로 피곤한지를 알려줄 뿐입니다.
+#     """)
 
 
 
